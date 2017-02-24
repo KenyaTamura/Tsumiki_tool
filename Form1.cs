@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 
+using XML_cs;
+
 namespace Tsumiki_tool {
     // ウィンドウの設定
     class Form1 : Form {
@@ -25,10 +27,10 @@ namespace Tsumiki_tool {
         private PictureBox picture_body;
 
         public Form1() {
-            initialize_component();
+            Initialize_component();
         }
 
-        private void initialize_component() {
+        private void Initialize_component() {
             this.button_new = new Button();
             this.button_save = new Button();
  //           this.button_load = new Button();
@@ -42,17 +44,34 @@ namespace Tsumiki_tool {
             this.picture_edit = new PictureBox();
             this.picture_body = new PictureBox();
 
+            // XMLから位置情報を受け取る
+            Document doc = new Document("Data\\config.xml");
+            Element config = doc.get_root().children[0];
+            // コンポーネント（ボタン）
+            Element cmp = doc.get_root().children[1].children[0];   
+            // ボタンのサイズ
+            string[] tmp_s_array = cmp.attribute[0].val.Split(',');
+            Size b_size = new Size(int.Parse(tmp_s_array[0]), int.Parse(tmp_s_array[1]));
+            // ピクチャ
+            Element pic = doc.get_root().children[2];
+            Element e;  // 一時変数、コンポーネントそれぞれに利用
+            string[] xy;    // コンマ区切りを格納、位置
+
             // button_new
-            this.button_new.Location = new Point(585, 19);
-            this.button_new.Size = new Size(75, 23);
-            this.button_new.Text = "新規";
+            e = cmp.children[0];
+            xy = e.attribute[0].val.Split(',');
+            this.button_new.Location = new Point(int.Parse(xy[0]), int.Parse(xy[1]));
+            this.button_new.Size = b_size;
+            this.button_new.Text = e.attribute[1].val;
             this.button_new.UseVisualStyleBackColor = true;
-             
+            this.button_new.Click += new EventHandler(Component.B_new);
+
             // button_save
             this.button_save.Location = new Point(585, 48);
             this.button_save.Size = new Size(75, 23);
             this.button_save.Text = "保存";
             this.button_save.UseVisualStyleBackColor = true;
+            this.button_save.Click += new EventHandler(Component.B_save);
 
             // button_load
             // TODO
@@ -68,31 +87,36 @@ namespace Tsumiki_tool {
             this.button_set.Size = new Size(75, 23);
             this.button_set.Text = "設置";
             this.button_set.UseVisualStyleBackColor = true;
-             
+            this.button_set.Click += new EventHandler(Component.B_set); 
+
             // button_color 
             this.button_color.Location = new Point(327, 199);
             this.button_color.Size = new Size(75, 23);
             this.button_color.Text = "色替え";
             this.button_color.UseVisualStyleBackColor = true;
-             
+            this.button_color.Click += new EventHandler(Component.B_color);
+
             // button_edit 
             this.button_edit.Location = new Point(220, 304);
             this.button_edit.Size = new Size(75, 23);
             this.button_edit.Text = "編集";
             this.button_edit.UseVisualStyleBackColor = true;
-             
+            this.button_edit.Click += new EventHandler(Component.B_edit); 
+
             // button_del 
             this.button_del.Location = new Point(301, 304);
             this.button_del.Size = new Size(75, 23);
             this.button_del.Text = "削除";
             this.button_del.UseVisualStyleBackColor = true;
+            this.button_del.Click += new EventHandler(Component.B_edit);
 
             // button_order
             this.button_order.Location = new Point(382, 304);
             this.button_order.Size = new Size(75, 23);
             this.button_order.Text = "順序";
             this.button_order.UseVisualStyleBackColor = true;
-             
+            this.button_order.Click += new EventHandler(Component.B_order); 
+
             // label_state 
             this.label_state.AutoSize = true;
             this.label_state.Location = new Point(260, 255);
@@ -112,7 +136,10 @@ namespace Tsumiki_tool {
             this.picture_body.Size = new Size(384, 512);
            
             // コンポーネント設置
-            this.ClientSize = new Size(960, 640);
+            // ウィンドウのコンフィグ
+            this.ClientSize = new Size(int.Parse(config.attribute[0].val), int.Parse(config.attribute[1].val));
+            this.Text = config.attribute[2].val;
+            // ボタンの追加
             this.Controls.Add(this.button_new);
             this.Controls.Add(this.button_save);
          //   this.Controls.Add(this.button_load);
@@ -121,9 +148,10 @@ namespace Tsumiki_tool {
             this.Controls.Add(this.button_edit);
             this.Controls.Add(this.button_del);
             this.Controls.Add(this.button_order);
+            // ラベル
             this.Controls.Add(this.label_state);
+            // コンボボックス
             this.Controls.Add(this.box_file);
-            this.Text = "ステージ作成ツール";
             this.ResumeLayout(false);
             this.PerformLayout();
         }
