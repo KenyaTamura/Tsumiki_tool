@@ -8,7 +8,8 @@ namespace Tsumiki_tool {
     class Component {
         // 新規作成
         static public void B_new(object sender, EventArgs e) {
-
+            string s = Manager.new_filename();
+            Manager.Box_file = s;
         }
 
         // 保存

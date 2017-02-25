@@ -8,7 +8,7 @@ using System.Drawing;
 using XML_cs;
 
 namespace Tsumiki_tool {
-    // ウィンドウの設定
+
     class Form1 : Form {
         // コンポーネント
         private Button button_new;
@@ -32,6 +32,9 @@ namespace Tsumiki_tool {
         // ボタンサイズなどの情報(XML)
         private Document doc;
 
+        public const string path = "Data\\";
+
+        // ボタンの名前の列挙型、XMLの順番に対応している
         private enum B_name {
             NEW = 0,
             SAVE,
@@ -47,6 +50,7 @@ namespace Tsumiki_tool {
             Initialize_component();
         }
 
+        // 初期設定
         private void Initialize_component() {
             this.button_new = new Button();
             this.button_save = new Button();
@@ -62,7 +66,7 @@ namespace Tsumiki_tool {
             this.picture_body = new PictureBox();
 
             // XMLから位置情報を受け取る
-            doc = new Document("Data\\config.xml");
+            doc = new Document(path + "config.xml");
             // ウィンドウのコンフィグ
             Element config = doc.get_root().children[0];
             // コンポーネント
@@ -75,41 +79,41 @@ namespace Tsumiki_tool {
             Element box = cmp.children[2];
             // ボタンのサイズ
             string[] b_xy = cmp.children[0].attribute[0].val.Split(',');
-            b_size = new Size(int.Parse(b_xy[0]), int.Parse(b_xy[1]));          
+            b_size = new Size(int.Parse(b_xy[0]), int.Parse(b_xy[1]));
 
 
             // ボタン
             // button_new
-            button_setting(ref this.button_new, B_name.NEW);
+            Button_setting(ref this.button_new, B_name.NEW);
             this.button_new.Click += new EventHandler(Component.B_new);
 
             // button_save
-            button_setting(ref this.button_save, B_name.SAVE);
+            Button_setting(ref this.button_save, B_name.SAVE);
             this.button_save.Click += new EventHandler(Component.B_save);
 
             // button_load          
-            button_setting(ref this.button_load, B_name.LOAD);
+            Button_setting(ref this.button_load, B_name.LOAD);
             this.button_load.Click += new EventHandler(Component.B_load);
 
             // button_set
-            button_setting(ref this.button_set, B_name.SET);
+            Button_setting(ref this.button_set, B_name.SET);
             this.button_set.Click += new EventHandler(Component.B_set);
 
             // button_color 
-            button_setting(ref this.button_color, B_name.COLOR);
+            Button_setting(ref this.button_color, B_name.COLOR);
             this.button_color.Click += new EventHandler(Component.B_color);
 
             // button_edit 
-            button_setting(ref this.button_edit, B_name.EDIT);
+            Button_setting(ref this.button_edit, B_name.EDIT);
             this.button_edit.Click += new EventHandler(Component.B_edit);
 
             // button_del 
-            button_setting(ref this.button_del, B_name.DEL);
+            Button_setting(ref this.button_del, B_name.DEL);
             this.button_del.Click += new EventHandler(Component.B_del);
 
             // button_order
-            button_setting(ref this.button_order, B_name.ORDER);
-            this.button_order.Click += new EventHandler(Component.B_order); 
+            Button_setting(ref this.button_order, B_name.ORDER);
+            this.button_order.Click += new EventHandler(Component.B_order);
 
             // ラベル
             // label_state 
@@ -125,6 +129,7 @@ namespace Tsumiki_tool {
             this.box_file.Size = new Size(int.Parse(box_xy[0]), int.Parse(box_xy[1]));
             box_xy = box.children[0].attribute[1].val.Split(',');
             this.box_file.Location = new Point(int.Parse(box_xy[0]), int.Parse(box_xy[1]));
+            Add_box();
 
             // ピクチャ
             // picture_edit
@@ -132,7 +137,7 @@ namespace Tsumiki_tool {
             this.picture_edit.Size = new Size(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
             picture_xy = pic.children[0].attribute[1].val.Split(',');
             this.picture_edit.Location = new Point(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
-            
+
             Bitmap canvas = new Bitmap(600, 600);
             picture_edit.Image = canvas;
             //ImageオブジェクトのGraphicsオブジェクトを作成する
@@ -146,7 +151,7 @@ namespace Tsumiki_tool {
             this.picture_body.Size = new Size(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
             picture_xy = pic.children[1].attribute[1].val.Split(',');
             this.picture_body.Location = new Point(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
-            canvas = new Bitmap(600, 600);
+            canvas = new Bitmap(640, 640);
             //ImageオブジェクトのGraphicsオブジェクトを作成する
             g = Graphics.FromImage(canvas);
             // 塗りつぶした四角形
@@ -179,9 +184,9 @@ namespace Tsumiki_tool {
             this.ResumeLayout(false);
             this.PerformLayout();
         }
-        
+
         // ボタン、対応する列挙型
-        private void button_setting(ref Button b, B_name name) {
+        private void Button_setting(ref Button b, B_name name) {
             int i = (int)(name);
             // コンポーネント（ボタン）
             Element cmp_b = doc.get_root().children[1].children[0];
@@ -192,6 +197,39 @@ namespace Tsumiki_tool {
             b.Size = b_size;
             b.Text = e.attribute[1].val;
             b.UseVisualStyleBackColor = true;
+        }
+
+        // コンボボックスに要素を追加
+        private void Add_box() {
+            // ファイルパスからファイル名を取得する
+            string[] filename = System.IO.Directory.GetFiles(path, "stage*");
+            for (int i = 0; i < filename.Length; ++i) {
+                filename[i] = filename[i].Replace(path, "");
+                filename[i] = filename[i].Replace(".xml", "");
+                box_file.Items.Add(filename[i]);
+            }
+        }
+
+        public string Box_file {
+            // 指定中の要素
+            get {
+                int index = box_file.SelectedIndex;
+                return box_file.Items[index].ToString();
+            }
+            // 末尾に追加
+            set {
+                // 重複排除
+                int flag = box_file.Items.IndexOf(value);
+                if (flag == -1) {
+                    box_file.Items.Add(value);
+                    box_file.SelectedIndex = box_file.Items.Count - 1;
+                }
+            }
+        }
+
+        public string new_filename() {
+            string[] filename = System.IO.Directory.GetFiles(path, "stage*");
+            return "stage" + filename.Length.ToString();
         }
 
     }
