@@ -1,0 +1,26 @@
+<Low_fanction_xml>
+	<Config width="800" height="704" title="ステージ作成ツール"></Config>
+<Component>
+	<Button size="80,24">
+		<New point="672,32" name="新規"></New>
+		<Save point="672,96" name="保存"></Save>
+		<Load point="672,160" name="ロード"></Load>
+		<Set point="384,196" name="設置"></Set>
+		<Color point="504,196" name="色替え"></Color>
+		<Edit point="384,324" name="編集"></Edit>
+		<Del point="384,388" name="削除"></Del>
+		<Order point="384,452" name="順序"></Order>
+	</Button>
+	<Label>
+		<State point="384,260" init="状態： 編集"></State>
+	</Label>
+	<ComboBox>
+		<File size="80,24" point="672,224"></File>
+	</ComboBox>
+</Component>
+<Picture>
+	<Edit size="256,128" point="384,32"></Edit>
+	<Body size="320,640" point="32,32"></Edit>
+</Picture>
+
+</Low_fanction_xml>

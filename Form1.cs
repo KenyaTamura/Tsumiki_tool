@@ -13,7 +13,7 @@ namespace Tsumiki_tool {
         // コンポーネント
         private Button button_new;
         private Button button_save;
- //       private Button button_load;
+        private Button button_load;
         private Button button_set;
         private Button button_color;
         private Button button_edit;
@@ -26,6 +26,23 @@ namespace Tsumiki_tool {
         private PictureBox picture_edit;
         private PictureBox picture_body;
 
+        // ボタンのサイズ
+        private Size b_size;
+
+        // ボタンサイズなどの情報(XML)
+        private Document doc;
+
+        private enum B_name {
+            NEW = 0,
+            SAVE,
+            LOAD,
+            SET,
+            COLOR,
+            EDIT,
+            DEL,
+            ORDER
+        }
+
         public Form1() {
             Initialize_component();
         }
@@ -33,7 +50,7 @@ namespace Tsumiki_tool {
         private void Initialize_component() {
             this.button_new = new Button();
             this.button_save = new Button();
- //           this.button_load = new Button();
+            this.button_load = new Button();
             this.button_set = new Button();
             this.button_color = new Button();
             this.button_edit = new Button();
@@ -45,116 +62,137 @@ namespace Tsumiki_tool {
             this.picture_body = new PictureBox();
 
             // XMLから位置情報を受け取る
-            Document doc = new Document("Data\\config.xml");
+            doc = new Document("Data\\config.xml");
+            // ウィンドウのコンフィグ
             Element config = doc.get_root().children[0];
-            // コンポーネント（ボタン）
-            Element cmp = doc.get_root().children[1].children[0];   
-            // ボタンのサイズ
-            string[] tmp_s_array = cmp.attribute[0].val.Split(',');
-            Size b_size = new Size(int.Parse(tmp_s_array[0]), int.Parse(tmp_s_array[1]));
+            // コンポーネント
+            Element cmp = doc.get_root().children[1];
             // ピクチャ
             Element pic = doc.get_root().children[2];
-            Element e;  // 一時変数、コンポーネントそれぞれに利用
-            string[] xy;    // コンマ区切りを格納、位置
+            // ラベルのエレメント
+            Element label = cmp.children[1];
+            // コンボボックスのエレメント
+            Element box = cmp.children[2];
+            // ボタンのサイズ
+            string[] b_xy = cmp.children[0].attribute[0].val.Split(',');
+            b_size = new Size(int.Parse(b_xy[0]), int.Parse(b_xy[1]));          
 
+
+            // ボタン
             // button_new
-            e = cmp.children[0];
-            xy = e.attribute[0].val.Split(',');
-            this.button_new.Location = new Point(int.Parse(xy[0]), int.Parse(xy[1]));
-            this.button_new.Size = b_size;
-            this.button_new.Text = e.attribute[1].val;
-            this.button_new.UseVisualStyleBackColor = true;
+            button_setting(ref this.button_new, B_name.NEW);
             this.button_new.Click += new EventHandler(Component.B_new);
 
             // button_save
-            this.button_save.Location = new Point(585, 48);
-            this.button_save.Size = new Size(75, 23);
-            this.button_save.Text = "保存";
-            this.button_save.UseVisualStyleBackColor = true;
+            button_setting(ref this.button_save, B_name.SAVE);
             this.button_save.Click += new EventHandler(Component.B_save);
 
-            // button_load
-            // TODO
-            /*
-            this.button_load.Location = new Point(585, 77);
-            this.button_load.Size = new Size(75, 23);
-            this.button_load.Text = "ロード";
-            this.button_load.UseVisualStyleBackColor = true;
-            */
+            // button_load          
+            button_setting(ref this.button_load, B_name.LOAD);
+            this.button_load.Click += new EventHandler(Component.B_load);
 
             // button_set
-            this.button_set.Location = new Point(246, 199);
-            this.button_set.Size = new Size(75, 23);
-            this.button_set.Text = "設置";
-            this.button_set.UseVisualStyleBackColor = true;
-            this.button_set.Click += new EventHandler(Component.B_set); 
+            button_setting(ref this.button_set, B_name.SET);
+            this.button_set.Click += new EventHandler(Component.B_set);
 
             // button_color 
-            this.button_color.Location = new Point(327, 199);
-            this.button_color.Size = new Size(75, 23);
-            this.button_color.Text = "色替え";
-            this.button_color.UseVisualStyleBackColor = true;
+            button_setting(ref this.button_color, B_name.COLOR);
             this.button_color.Click += new EventHandler(Component.B_color);
 
             // button_edit 
-            this.button_edit.Location = new Point(220, 304);
-            this.button_edit.Size = new Size(75, 23);
-            this.button_edit.Text = "編集";
-            this.button_edit.UseVisualStyleBackColor = true;
-            this.button_edit.Click += new EventHandler(Component.B_edit); 
+            button_setting(ref this.button_edit, B_name.EDIT);
+            this.button_edit.Click += new EventHandler(Component.B_edit);
 
             // button_del 
-            this.button_del.Location = new Point(301, 304);
-            this.button_del.Size = new Size(75, 23);
-            this.button_del.Text = "削除";
-            this.button_del.UseVisualStyleBackColor = true;
-            this.button_del.Click += new EventHandler(Component.B_edit);
+            button_setting(ref this.button_del, B_name.DEL);
+            this.button_del.Click += new EventHandler(Component.B_del);
 
             // button_order
-            this.button_order.Location = new Point(382, 304);
-            this.button_order.Size = new Size(75, 23);
-            this.button_order.Text = "順序";
-            this.button_order.UseVisualStyleBackColor = true;
+            button_setting(ref this.button_order, B_name.ORDER);
             this.button_order.Click += new EventHandler(Component.B_order); 
 
+            // ラベル
             // label_state 
             this.label_state.AutoSize = true;
-            this.label_state.Location = new Point(260, 255);
-            this.label_state.Text = "初期";
+            string[] label_xy = label.children[0].attribute[0].val.Split(',');
+            this.label_state.Location = new Point(int.Parse(label_xy[0]), int.Parse(label_xy[1]));
+            this.label_state.Text = label.children[0].attribute[1].val;
 
+            // コンボボックス
             // box_file
             this.box_file.FormattingEnabled = true;
-            this.box_file.Location = new Point(562, 121);
-            this.box_file.Size = new Size(121, 20);
+            string[] box_xy = box.children[0].attribute[0].val.Split(',');
+            this.box_file.Size = new Size(int.Parse(box_xy[0]), int.Parse(box_xy[1]));
+            box_xy = box.children[0].attribute[1].val.Split(',');
+            this.box_file.Location = new Point(int.Parse(box_xy[0]), int.Parse(box_xy[1]));
 
+            // ピクチャ
             // picture_edit
-            this.picture_edit.Location = new Point(480, 100);
-            this.picture_edit.Size = new Size(256, 128);
+            string[] picture_xy = pic.children[0].attribute[0].val.Split(',');
+            this.picture_edit.Size = new Size(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
+            picture_xy = pic.children[0].attribute[1].val.Split(',');
+            this.picture_edit.Location = new Point(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
+            
+            Bitmap canvas = new Bitmap(600, 600);
+            picture_edit.Image = canvas;
+            //ImageオブジェクトのGraphicsオブジェクトを作成する
+            Graphics g = Graphics.FromImage(canvas);
+            // 塗りつぶした四角形
+            g.FillRectangle(Brushes.Red, 0, 0, 600, 600);
+            g.Dispose();
 
             // picture_body
-            this.picture_body.Location = new Point(10, 100);
-            this.picture_body.Size = new Size(384, 512);
-           
+            picture_xy = pic.children[1].attribute[0].val.Split(',');
+            this.picture_body.Size = new Size(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
+            picture_xy = pic.children[1].attribute[1].val.Split(',');
+            this.picture_body.Location = new Point(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
+            canvas = new Bitmap(600, 600);
+            //ImageオブジェクトのGraphicsオブジェクトを作成する
+            g = Graphics.FromImage(canvas);
+            // 塗りつぶした四角形
+            g.FillRectangle(Brushes.Red, 0, 0, 600, 640);
+            picture_body.Image = canvas;
+            g.Dispose();
+
             // コンポーネント設置
             // ウィンドウのコンフィグ
-            this.ClientSize = new Size(int.Parse(config.attribute[0].val), int.Parse(config.attribute[1].val));
+            this.MinimumSize = new Size(int.Parse(config.attribute[0].val), int.Parse(config.attribute[1].val));
+            this.MaximumSize = new Size(int.Parse(config.attribute[0].val), int.Parse(config.attribute[1].val));
             this.Text = config.attribute[2].val;
             // ボタンの追加
             this.Controls.Add(this.button_new);
             this.Controls.Add(this.button_save);
-         //   this.Controls.Add(this.button_load);
+            this.Controls.Add(this.button_load);
             this.Controls.Add(this.button_set);
             this.Controls.Add(this.button_color);
             this.Controls.Add(this.button_edit);
             this.Controls.Add(this.button_del);
             this.Controls.Add(this.button_order);
-            // ラベル
+            // ラベルの追加
             this.Controls.Add(this.label_state);
-            // コンボボックス
+            // コンボボックスの追加
             this.Controls.Add(this.box_file);
+            // ピクチャの追加
+            this.Controls.Add(this.picture_edit);
+            this.Controls.Add(this.picture_body);
+
             this.ResumeLayout(false);
             this.PerformLayout();
         }
         
+        // ボタン、対応する列挙型
+        private void button_setting(ref Button b, B_name name) {
+            int i = (int)(name);
+            // コンポーネント（ボタン）
+            Element cmp_b = doc.get_root().children[1].children[0];
+            // 列挙型に対応したエレメント
+            Element e = cmp_b.children[i];
+            string[] xy = e.attribute[0].val.Split(',');
+            b.Location = new Point(int.Parse(xy[0]), int.Parse(xy[1]));
+            b.Size = b_size;
+            b.Text = e.attribute[1].val;
+            b.UseVisualStyleBackColor = true;
+        }
+
     }
 }

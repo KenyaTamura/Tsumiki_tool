@@ -15,6 +15,11 @@ namespace Tsumiki_tool {
         static public void B_save(object sender, EventArgs e) {
 
         }
+        
+        // 読込み
+        static public void B_load(object sender, EventArgs e) {
+
+        }
 
         // 設置
         static public void B_set(object sender, EventArgs e) {
