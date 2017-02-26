@@ -8,13 +8,15 @@ namespace Tsumiki_tool {
     class Component {
         // 新規作成
         static public void B_new(object sender, EventArgs e) {
-            string s = Manager.new_filename();
+            string s = Manager.new_stage();
             Manager.Box_file = s;
+            Body.Root.Filename = Manager.path + s + ".xml";
+            Body.Root.New_stage();
         }
 
         // 保存
         static public void B_save(object sender, EventArgs e) {
-
+            Body.Root.Save();
         }
         
         // 読込み

@@ -6,8 +6,7 @@ using System.Windows.Forms;
 
 namespace Tsumiki_tool
 {
-    class Program
-    {
+    class Program{
         static Form1 root;
         // 開始
         [STAThread]
@@ -16,6 +15,7 @@ namespace Tsumiki_tool
             Application.Run(root);
         }
 
+        // 動かしてるフォーム
         public static Form1 Root {
             get {
                 return root;

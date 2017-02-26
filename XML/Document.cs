@@ -22,7 +22,7 @@ namespace XML_cs
         private Element mRoot;
         // 新規作成
         public Document() {
-            mRoot = new Element("<Low_fanction_xml>");
+            mRoot = new Element("Low_fanction_xml");
         }
 
         // XMLファイル名から読み込み

@@ -20,19 +20,37 @@ namespace Tsumiki_tool {
         private Button button_del;
         private Button button_order;
         private Label label_state;
+        private Label label_score;
         private ComboBox box_file;
 
         // ピクチャー
         private PictureBox picture_edit;
+        private Bitmap bitmap_edit;
         private PictureBox picture_body;
-
+        private Bitmap bitmap_body;
+        
         // ボタンのサイズ
         private Size b_size;
 
         // ボタンサイズなどの情報(XML)
         private Document doc;
 
+        // パス
         public const string path = "Data\\";
+
+        // 初期データの識別、XMLの格納順
+        private enum Init_define {
+            CONFIG = 0,
+            COMPONENT,
+            PICTURE
+        }
+
+        // コンポーネントの識別
+        private enum Cmp_define {
+            BUTTON = 0,
+            LABEL,
+            COMBO_BOX
+        }
 
         // ボタンの名前の列挙型、XMLの順番に対応している
         private enum B_name {
@@ -46,6 +64,11 @@ namespace Tsumiki_tool {
             ORDER
         }
 
+        // ピクチャの名前の列挙型、XMLの順番に対応している
+        private enum P_name {
+            EDIT = 0,
+            BODY
+        }
         public Form1() {
             Initialize_component();
         }
@@ -61,6 +84,7 @@ namespace Tsumiki_tool {
             this.button_del = new Button();
             this.button_order = new Button();
             this.label_state = new Label();
+            this.label_score = new Label();
             this.box_file = new ComboBox();
             this.picture_edit = new PictureBox();
             this.picture_body = new PictureBox();
@@ -68,17 +92,15 @@ namespace Tsumiki_tool {
             // XMLから位置情報を受け取る
             doc = new Document(path + "config.xml");
             // ウィンドウのコンフィグ
-            Element config = doc.get_root().children[0];
+            Element config = doc.get_root().children[(int)Init_define.CONFIG];
             // コンポーネント
-            Element cmp = doc.get_root().children[1];
-            // ピクチャ
-            Element pic = doc.get_root().children[2];
+            Element cmp = doc.get_root().children[(int)Init_define.COMPONENT];
             // ラベルのエレメント
-            Element label = cmp.children[1];
+            Element label = cmp.children[(int)Cmp_define.LABEL];
             // コンボボックスのエレメント
-            Element box = cmp.children[2];
+            Element box = cmp.children[(int)Cmp_define.COMBO_BOX];
             // ボタンのサイズ
-            string[] b_xy = cmp.children[0].attribute[0].val.Split(',');
+            string[] b_xy = cmp.children[(int)Cmp_define.BUTTON].attribute[0].val.Split(',');
             b_size = new Size(int.Parse(b_xy[0]), int.Parse(b_xy[1]));
 
 
@@ -122,6 +144,12 @@ namespace Tsumiki_tool {
             this.label_state.Location = new Point(int.Parse(label_xy[0]), int.Parse(label_xy[1]));
             this.label_state.Text = label.children[0].attribute[1].val;
 
+            // label_score
+            this.label_score.AutoSize = true;
+            label_xy = label.children[1].attribute[0].val.Split(',');
+            this.label_score.Location = new Point(int.Parse(label_xy[0]), int.Parse(label_xy[1]));
+            this.label_score.Text = label.children[1].attribute[1].val;
+
             // コンボボックス
             // box_file
             this.box_file.FormattingEnabled = true;
@@ -133,31 +161,10 @@ namespace Tsumiki_tool {
 
             // ピクチャ
             // picture_edit
-            string[] picture_xy = pic.children[0].attribute[0].val.Split(',');
-            this.picture_edit.Size = new Size(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
-            picture_xy = pic.children[0].attribute[1].val.Split(',');
-            this.picture_edit.Location = new Point(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
-
-            Bitmap canvas = new Bitmap(600, 600);
-            picture_edit.Image = canvas;
-            //ImageオブジェクトのGraphicsオブジェクトを作成する
-            Graphics g = Graphics.FromImage(canvas);
-            // 塗りつぶした四角形
-            g.FillRectangle(Brushes.Red, 0, 0, 600, 600);
-            g.Dispose();
+            Picture_setting(ref picture_edit, ref bitmap_edit, P_name.EDIT);
 
             // picture_body
-            picture_xy = pic.children[1].attribute[0].val.Split(',');
-            this.picture_body.Size = new Size(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
-            picture_xy = pic.children[1].attribute[1].val.Split(',');
-            this.picture_body.Location = new Point(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
-            canvas = new Bitmap(640, 640);
-            //ImageオブジェクトのGraphicsオブジェクトを作成する
-            g = Graphics.FromImage(canvas);
-            // 塗りつぶした四角形
-            g.FillRectangle(Brushes.Red, 0, 0, 600, 640);
-            picture_body.Image = canvas;
-            g.Dispose();
+            Picture_setting(ref picture_body, ref bitmap_edit, P_name.BODY);
 
             // コンポーネント設置
             // ウィンドウのコンフィグ
@@ -175,6 +182,7 @@ namespace Tsumiki_tool {
             this.Controls.Add(this.button_order);
             // ラベルの追加
             this.Controls.Add(this.label_state);
+            this.Controls.Add(this.label_score);
             // コンボボックスの追加
             this.Controls.Add(this.box_file);
             // ピクチャの追加
@@ -185,6 +193,7 @@ namespace Tsumiki_tool {
             this.PerformLayout();
         }
 
+        // ボタンのセット
         // ボタン、対応する列挙型
         private void Button_setting(ref Button b, B_name name) {
             int i = (int)(name);
@@ -210,6 +219,38 @@ namespace Tsumiki_tool {
             }
         }
 
+        // ピクチャのセット
+        // ピクチャ、ビットマップ、対応する列挙型
+        private void Picture_setting(ref PictureBox p, ref Bitmap b, P_name name) {
+            // ピクチャのエレメント
+            // ピクチャとビットマップの作成
+            Element pic = doc.get_root().children[(int)Init_define.PICTURE].children[(int)name];
+            string[] picture_xy = pic.attribute[0].val.Split(',');
+            p.Size = new Size(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));
+            b = new Bitmap(p.Width, p.Height);
+            picture_xy = pic.attribute[1].val.Split(',');
+            p.Location = new Point(int.Parse(picture_xy[0]), int.Parse(picture_xy[1]));           
+            p.Image = b;
+            // 描画
+            Graphics g = Graphics.FromImage(b);
+            // 外枠の長方形
+            Pen pen = new Pen(Color.Black, 3);
+            g.DrawRectangle(pen, 0, 0, p.Width-1, p.Height-1);
+            // 内枠の長方形
+            pen = new Pen(Color.Gray, 1);
+            int row = int.Parse(pic.attribute[2].val);
+            int column = int.Parse(pic.attribute[3].val);
+            int w = p.Width / column;
+            int h = p.Height / row;
+            for(int i = 0; i < row; ++i) {
+                for(int j = 0; j < column; ++j) {
+                    g.DrawRectangle(pen, w * j, h * i, w, h);
+                }
+            }
+            g.Dispose();
+        }
+
+        // コンボボックスの操作
         public string Box_file {
             // 指定中の要素
             get {
@@ -227,7 +268,8 @@ namespace Tsumiki_tool {
             }
         }
 
-        public string new_filename() {
+        // ステージ番号を返す
+        public string new_stage() {
             string[] filename = System.IO.Directory.GetFiles(path, "stage*");
             return "stage" + filename.Length.ToString();
         }

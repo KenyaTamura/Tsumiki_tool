@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Body\Block.cs" />
+    <Compile Include="Body\Root.cs" />
+    <Compile Include="Body\Setting.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

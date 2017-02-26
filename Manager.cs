@@ -8,11 +8,15 @@ using System.Threading.Tasks;
 namespace Tsumiki_tool {
     // Form1で定義した機能を利用
     class Manager {
+
+        static public string path = Form1.path;
+
         Manager() {
 
         }
 
-        static public string Box_file {
+        // コンボボックスの操作
+        public static string Box_file {
             // 指定中の要素
             get {
                 return Program.Root.Box_file;
@@ -23,8 +27,9 @@ namespace Tsumiki_tool {
             }
         }
 
-        public static string new_filename() {
-            return Program.Root.new_filename();
+        // ステージ番号を返す
+        public static string new_stage() {
+            return Program.Root.new_stage();
         }
 
     }
