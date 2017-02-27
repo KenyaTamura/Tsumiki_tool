@@ -32,7 +32,7 @@ namespace Tsumiki_tool {
 
         // 色替え
         static public void B_color(object sender, EventArgs e) {
-
+            Body.Root.Change_color();
         }
 
         // 編集

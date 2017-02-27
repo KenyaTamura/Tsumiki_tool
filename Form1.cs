@@ -303,7 +303,7 @@ namespace Tsumiki_tool {
             mPicture_edit.Image = mBitmap_edit;
             // 外枠の長方形
             Pen pen = new Pen(Color.Black, 3);
-            g.DrawRectangle(pen, 0, 0, mPicture_edit.Width, mPicture_edit.Height);
+            g.DrawRectangle(pen, 0, 0, mPicture_edit.Width - 1, mPicture_edit.Height - 1);
             // 内枠の長方形
             pen = new Pen(Color.Gray, 1);
             for (int i = 0; i < Manager.Block_height; ++i) {

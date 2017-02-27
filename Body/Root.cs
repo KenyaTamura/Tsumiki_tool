@@ -14,8 +14,8 @@ namespace Tsumiki_tool.Body {
 
         // フィールド情報
         static private bool[] mFields = null;    // trueなら埋まっている
-        static Block[] mBlocks = null;
-        static Block mForm_block = null;
+        static private Block[] mBlocks = null;
+        static private Block mForm_block = null;
 
         // ファイル名の操作
         static public string Filename {
@@ -50,15 +50,29 @@ namespace Tsumiki_tool.Body {
             int mass_y = y / (Manager.Edit_Height / Manager.Block_height);
             // ある場所の形を変更
             mForm_block.Change_shape(mass_x, mass_y);
-            // 形を調べて再描画
-            for(int i = 0; i < Manager.Block_height; ++i) {
-                for(int j = 0; j < Manager.Block_width; ++j) {
+            // 描画
+            Redraw_edit();
+        }
+
+        // 編集フォームの色替え
+        static public void Change_color() {
+            if (mForm_block == null) {
+                return;
+            }
+            mForm_block.Change_color();
+            Redraw_edit();
+        }
+
+        // 形を調べてフォームの再描画
+        static private void Redraw_edit() {            
+            for (int i = 0; i < Manager.Block_height; ++i) {
+                for (int j = 0; j < Manager.Block_width; ++j) {
                     if (mForm_block.Get_shape(j, i)) {
                         Manager.Draw_edit(j, i, mForm_block.Get_color);
                     }
                     else {
                         Manager.Draw_edit(j, i, Block.Color.NONE);
-                    }                           
+                    }
                 }
             }
         }
