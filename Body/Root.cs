@@ -13,7 +13,8 @@ namespace Tsumiki_tool.Body {
         static private Document mXml_data = null;
 
         // フィールド情報
-        static private bool[] mFields = null;    // trueなら埋まっている
+        static private Block.Color[] mFields = null;    // NONE以外なら埋まっている
+        static private Block.Color[] mFields_prev = null;    // 前回の描画
         static private Block[] mBlocks = null;
         static private Block mForm_block = null;
 
@@ -27,7 +28,8 @@ namespace Tsumiki_tool.Body {
             Manager.Box_file = s;
             mFilename = Manager.Path + s + ".xml";
             mXml_data = new Document();
-            mFields = new bool[Manager.Field_X * Manager.Field_Y];
+            mFields = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
+            mFields_prev = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
             mForm_block = new Block(0);
         }
 
@@ -44,8 +46,8 @@ namespace Tsumiki_tool.Body {
             if (mForm_block == null) {
                 return;
             }
-            int mass_x = x / (Manager.Edit_Width / Manager.Block_width);
-            int mass_y = y / (Manager.Edit_Height / Manager.Block_height);
+            int mass_x = x / (Manager.Edit_width / Manager.Block_width);
+            int mass_y = y / (Manager.Edit_height / Manager.Block_height);
             // ある場所の形を変更
             mForm_block.Change_shape(mass_x, mass_y);
             // 描画
@@ -75,15 +77,40 @@ namespace Tsumiki_tool.Body {
             }
         }
 
+        // フィールドを調べて再描画
+        static public void Redraw_field() {
+            if(mFields == null) {
+                return;
+            }
+            // フィールド情報を基に描画
+            // 前回から変化があったら再描画
+            for(int y = 0; y < Manager.Field_Y; ++y) {
+                for(int x = 0; x < Manager.Field_X; ++x) {
+                    int point = x + y * Manager.Field_X;
+                    if (mFields[point] != mFields_prev[point]) {
+                        Manager.Draw_field(x, y, mFields[point]);
+                        mFields_prev[point] = mFields[point];
+                    }
+                }
+            }
+        }
+
         // フィールドフォームでクリック
-        static public void Click_on_field(int x, int y) {
+        static public void Click_on_field(System.Windows.Forms.MouseEventArgs e) {
             // Baseに任せる
             mBase.Clicked();
         }
 
         // フィールドフォームでカーソル移動
         static public void Move_on_field(int x, int y) {
-
+            // マス座標に変換
+            if (mForm_block == null) {
+                return;
+            }
+            int mass_x = x / (Manager.Field_width / Manager.Field_X);
+            int mass_y = y / (Manager.Field_height / Manager.Field_Y);
+            // Baseに任せる
+            mBase.Moved(mass_x, mass_y, mForm_block);
         }
 
         // モード変更
@@ -94,6 +121,22 @@ namespace Tsumiki_tool.Body {
                     mBase.Labeling();
                 }
             }
+        }
+
+        // フィールドに色をセット
+        static public void Set_field(int x, int y, Block.Color c) {
+            if (x < 0 || x >= Manager.Field_X || y < 0 || y >= Manager.Field_Y) {
+                return;
+            }
+            mFields[x + y * Manager.Field_X] = c;
+        }
+
+        // フィールドの色を獲得
+        static public Block.Color Get_field(int x, int y) {
+            if (x < 0 || x >= Manager.Field_X || y < 0 || y >= Manager.Field_Y) {
+                return Block.Color.NONE;
+            }
+            return mFields[x + y * Manager.Field_X];
         }
 
     }

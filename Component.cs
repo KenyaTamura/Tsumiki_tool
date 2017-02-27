@@ -65,14 +65,22 @@ namespace Tsumiki_tool {
 
         // フィールドフォームのマウス操作
         // フィールドフォームでクリック
-        static public void M_field_click(object sender, MouseEventArgs e) {           
-            Manager.Draw_field(0, 1, Body.Block.Color.GREEN);
+        static public void M_field_click(object sender, MouseEventArgs e) { 
+            // Rootでモードごとの処理
+            Manager.Draw_string_field(0, 0, "10");
         }
 
-        // フィールドフォームのマウス操作
         // マウスカーソルがフィールドフォームを移動
-        static public void M_field_move(object sender, MouseEventArgs e) {           
-            Manager.Draw_field(0, 0, Body.Block.Color.GREEN);
+        static public void M_field_move(object sender, MouseEventArgs e) {
+            // Rootでモードごとの処理
+            Body.Root.Move_on_field(e.X, e.Y);
         }
+
+        // フィールドフォームをマウスが離れる
+        static public void M_field_leave(object sender, EventArgs e) {
+            // 再描画
+            Body.Root.Redraw_field();
+        }
+
     }
 }

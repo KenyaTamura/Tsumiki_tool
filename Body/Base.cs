@@ -9,7 +9,7 @@ namespace Tsumiki_tool.Body {
         // クリック処理
         void Clicked();
         // 移動処理
-        void Moved();
+        void Moved(int x, int y, Block b);
         // ラベルの表示
         void Labeling();
     }

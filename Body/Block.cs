@@ -53,6 +53,25 @@ namespace Tsumiki_tool.Body {
             }
         }
 
+        // 基準点
+        public int X {
+            get {
+                return mX;
+            }
+            set {
+                mX = value;
+            }
+        }
+
+        public int Y {
+            get {
+                return mY;
+            }
+            set {
+                mY = value;
+            }
+        }
+
         // マス座標でブロックの状態を獲得
         public bool Get_shape(int x, int y) {
             if (Range_check(x,y)) {
@@ -60,6 +79,15 @@ namespace Tsumiki_tool.Body {
             }
             return false;
             
+        }
+
+        // 番号でブロックの状態を獲得
+        public bool Get_shape(int num) {
+            if (Range_check(num)) {
+                return mShape[num];
+            }
+            return false;
+
         }
 
         public Color Get_color {
@@ -85,11 +113,86 @@ namespace Tsumiki_tool.Body {
         
         // 範囲外ならfalse
         private bool Range_check(int x, int y) {
-            if (x < 0 || x >= Manager.Block_width && y < 0 || y >= Manager.Field_height) {
+            if (x < 0 || x >= Manager.Block_width || y < 0 || y >= Manager.Block_height) {
                 return false;
             }
             return true;
         }
+
+        private bool Range_check(int num) {
+            if (num < 0 || num >= Manager.Block_num) {
+                return false;
+            }
+            return true;
+        }
+
+        // 回転
+        public void Lotation() {
+            // 方向の数の剰余、東西南北以外ないはずだから4
+            mDir = (Dir)((int)(mDir + 1) % 4);
+            // 基準点を中心に回す
+            switch (mDir) {
+                case Dir.NORTH:
+                    mY += 3;
+                    break;
+                case Dir.EAST:
+                    mX -= 1;
+                    break;
+                case Dir.SOUTH:
+                    mX -= 2;
+                    mY -= 1;
+                    break;
+                case Dir.WEST:
+                    mX += 3;
+                    mY -= 2;
+                    break;
+            }
+            // フィールドの範囲内に押し込む
+            for (int i = 0; i < Manager.Block_num; ++i) {
+                if (mShape[i]) {
+                    if (Get_X(i) < 0) { ++mX; --i; }
+                    else if (Get_X(i) >= Manager.Field_X) { --mX; --i; }
+                    else if (Get_Y(i) < 0) { ++mY; --i; }
+                    else if (Get_Y(i) >= Manager.Field_Y) { --mY; --i; }
+                }
+            }
+        }
+
+        // num番目のブロック位置、マス座標X
+        public int Get_X(int num){
+            if (!Range_check(num)) {
+                return -1;
+            }
+			switch (mDir) {
+			case Dir.NORTH:
+				return mX + (num % Manager.Block_width);
+			case Dir.SOUTH:
+				return mX + (((Manager.Block_num - 1) - num) % Manager.Block_width);
+			case Dir.EAST:
+			    return mX + (((Manager.Block_num - 1) - num) / Manager.Block_width);
+			case Dir.WEST:
+				return mX + (num / Manager.Block_width);
+			}
+			return -1;
+		}
+
+        // num番目のブロック位置、マス座標Y
+        public int Get_Y(int num){
+            if (!Range_check(num)) {
+                return -1;
+            }
+            switch (mDir) {
+			case Dir.NORTH:
+				return mY + (num / Manager.Block_width);
+			case Dir.SOUTH:
+				return mY + (((Manager.Block_num - 1) - num) / Manager.Block_width);
+			case Dir.EAST:
+				return mY + (num % Manager.Block_width);
+			case Dir.WEST:
+				return mY + (((Manager.Block_num - 1) - num) % Manager.Block_width);
+			}
+			return -1;
+		}
         
     }
 }

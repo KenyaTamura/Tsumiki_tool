@@ -91,14 +91,14 @@ namespace Tsumiki_tool {
         }
 
         // 編集フォームの幅（ピクセル）
-        public static int Edit_Width {
+        public static int Edit_width {
             get {
                 return Program.Root.Edit_width;
             }
         }
 
         // 編集フォームの高さ（ピクセル）
-        public static int Edit_Height {
+        public static int Edit_height {
             get {
                 return Program.Root.Edit_height;
             }
@@ -121,6 +121,10 @@ namespace Tsumiki_tool {
         // モード表示ラベルの変更
         public static void Change_label_state(string s) {
             Program.Root.Change_label_state(s);
+        }
+
+        public static void Draw_string_field(int x, int y, string s) {
+            Program.Root.Draw_string_field(x, y, s);
         }
     }
 }

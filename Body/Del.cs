@@ -14,7 +14,8 @@ namespace Tsumiki_tool.Body {
 
         }
 
-        public void Moved() {
+        // 何もしない
+        public void Moved(int x, int y, Block b) {
 
         }
 

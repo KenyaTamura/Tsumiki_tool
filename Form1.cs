@@ -157,6 +157,7 @@ namespace Tsumiki_tool {
             box_xy = box.children[0].attribute[1].val.Split(',');
             this.mBox_file.Location = new Point(int.Parse(box_xy[0]), int.Parse(box_xy[1]));
             Add_box();
+            this.mBox_file.DropDownStyle = ComboBoxStyle.DropDownList;
 
             // ピクチャ
             // picture_edit
@@ -167,6 +168,7 @@ namespace Tsumiki_tool {
             Picture_setting(ref mPicture_field, ref mBitmap_field, P_name.FIELD);
             mPicture_field.MouseDown += new MouseEventHandler(Component.M_field_click);
             mPicture_field.MouseMove += new MouseEventHandler(Component.M_field_move);
+            mPicture_field.MouseLeave += new EventHandler(Component.M_field_leave);
 
             // コンポーネント設置
             // ウィンドウのコンフィグ
@@ -290,6 +292,9 @@ namespace Tsumiki_tool {
         // 編集フォームにブロックを描画
         // マスのXY座標、色
         public void Draw_edit(int x, int y, Body.Block.Color c) {
+            if(x < 0 || x >= Manager.Block_width && y < 0 || y >= Manager.Block_height) {
+                return;
+            }
             Brush b;
             switch (c) {
                 case Body.Block.Color.RED:
@@ -299,7 +304,7 @@ namespace Tsumiki_tool {
                     b = Brushes.Blue;
                     break;
                 case Body.Block.Color.GREEN:
-                    b = Brushes.Green;
+                    b = Brushes.LimeGreen;
                     break;
                 case Body.Block.Color.YELLOW:
                     b = Brushes.Yellow;
@@ -324,6 +329,9 @@ namespace Tsumiki_tool {
         // フィールドフォームにブロックを描画
         // マスのXY座標、色
         public void Draw_field(int x, int y, Body.Block.Color c) {
+            if (x < 0 || x >= Manager.Field_X && y < 0 || y >= Manager.Field_Y) {
+                return;
+            }
             Brush b;
             switch (c) {
                 case Body.Block.Color.RED:
@@ -333,7 +341,7 @@ namespace Tsumiki_tool {
                     b = Brushes.Blue;
                     break;
                 case Body.Block.Color.GREEN:
-                    b = Brushes.Green;
+                    b = Brushes.LimeGreen;
                     break;
                 case Body.Block.Color.YELLOW:
                     b = Brushes.Yellow;
@@ -382,6 +390,16 @@ namespace Tsumiki_tool {
         // モード表示ラベルの変更
         public void Change_label_state(string s) {
             mLabel_state.Text = s;
+        }
+
+        // フィールドフォームに文字描画
+        public void Draw_string_field(int x, int y, string s) {
+            Graphics g = Graphics.FromImage(mBitmap_field);
+            mPicture_field.Image = mBitmap_field;
+            int w = mPicture_field.Width / Manager.Field_X;
+            int h = mPicture_field.Height / Manager.Field_Y;
+            g.DrawString(s, new Font("",12), Brushes.Black, w * x, h * y);
+            g.Dispose();
         }
     }
 }
