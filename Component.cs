@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Tsumiki_tool {
     class Component {
         // 新規作成
         static public void B_new(object sender, EventArgs e) {
-            string s = Manager.new_stage();
+            string s = Manager.New_stage();
             Manager.Box_file = s;
-            Body.Root.Filename = Manager.path + s + ".xml";
+            Body.Root.Filename = Manager.Path + s + ".xml";
             Body.Root.New_stage();
         }
 
@@ -46,6 +47,20 @@ namespace Tsumiki_tool {
 
         // 順序
         static public void B_order(object sender, EventArgs e) {
+
+        }
+
+        // 編集フォームのマウス操作
+        static public void M_edit(object sender, MouseEventArgs e) {
+            // 左クリックでブロックを付けたり消したり
+            if(e.Button == MouseButtons.Left) {
+                // Rootに渡してそっちで処理
+                Body.Root.Click_on_edit(e.X, e.Y);
+            }
+        }
+
+        // 本体フォームのマウス操作
+        static public void M_body(object sender, MouseEventArgs e) {
 
         }
     }

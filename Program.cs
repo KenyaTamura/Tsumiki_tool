@@ -7,18 +7,18 @@ using System.Windows.Forms;
 namespace Tsumiki_tool
 {
     class Program{
-        static Form1 root;
+        static Form1 mRoot;
         // 開始
         [STAThread]
         static void Main() {
-            root = new Form1();
-            Application.Run(root);
+            mRoot = new Form1();
+            Application.Run(mRoot);
         }
 
         // 動かしてるフォーム
         public static Form1 Root {
             get {
-                return root;
+                return mRoot;
             }
         }
     }
