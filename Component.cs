@@ -9,9 +9,7 @@ namespace Tsumiki_tool {
     class Component {
         // 新規作成
         static public void B_new(object sender, EventArgs e) {
-            string s = Manager.New_stage();
-            Manager.Box_file = s;
-            Body.Root.Filename = Manager.Path + s + ".xml";
+            // Root側で処理
             Body.Root.New_stage();
         }
 
@@ -25,29 +23,35 @@ namespace Tsumiki_tool {
 
         }
 
+        /*
         // 設置
         static public void B_set(object sender, EventArgs e) {
 
         }
+        */
 
         // 色替え
         static public void B_color(object sender, EventArgs e) {
+            // Root側で処理
             Body.Root.Change_color();
         }
 
         // 編集
         static public void B_edit(object sender, EventArgs e) {
-
+            // 編集モードに変更
+            Body.Root.Change_mode = new Body.Setting();
         }
 
         // 削除
         static public void B_del(object sender, EventArgs e) {
-
+            // 削除モードに変更
+            Body.Root.Change_mode = new Body.Del();
         }
 
         // 順序
         static public void B_order(object sender, EventArgs e) {
-
+            // 順序モードに変更
+            Body.Root.Change_mode = new Body.Order();
         }
 
         // 編集フォームのマウス操作
@@ -59,9 +63,16 @@ namespace Tsumiki_tool {
             }
         }
 
-        // 本体フォームのマウス操作
-        static public void M_body(object sender, MouseEventArgs e) {
+        // フィールドフォームのマウス操作
+        // フィールドフォームでクリック
+        static public void M_field_click(object sender, MouseEventArgs e) {           
+            Manager.Draw_field(0, 1, Body.Block.Color.GREEN);
+        }
 
+        // フィールドフォームのマウス操作
+        // マウスカーソルがフィールドフォームを移動
+        static public void M_field_move(object sender, MouseEventArgs e) {           
+            Manager.Draw_field(0, 0, Body.Block.Color.GREEN);
         }
     }
 }

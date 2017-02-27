@@ -17,19 +17,15 @@ namespace Tsumiki_tool.Body {
         static private Block[] mBlocks = null;
         static private Block mForm_block = null;
 
-        // ファイル名の操作
-        static public string Filename {
-            get {
-                return mFilename;
-            }
-            set {
-                mFilename = value;
-            }
-        }
+        // フィールド操作を行うクラス
+        static private Base mBase = new Setting();
 
         // 新規作成
         static public void New_stage() {
             // 初期値を代入
+            string s = Manager.New_stage();
+            Manager.Box_file = s;
+            mFilename = Manager.Path + s + ".xml";
             mXml_data = new Document();
             mFields = new bool[Manager.Field_X * Manager.Field_Y];
             mForm_block = new Block(0);
@@ -37,7 +33,9 @@ namespace Tsumiki_tool.Body {
 
         // 保存
         static public void Save() {
-            mXml_data.write(mFilename);
+            if (mFilename != null) {
+                mXml_data.write(mFilename);
+            }
         }
 
         // 編集フォームでクリック
@@ -64,7 +62,7 @@ namespace Tsumiki_tool.Body {
         }
 
         // 形を調べてフォームの再描画
-        static private void Redraw_edit() {            
+        static private void Redraw_edit() {
             for (int i = 0; i < Manager.Block_height; ++i) {
                 for (int j = 0; j < Manager.Block_width; ++j) {
                     if (mForm_block.Get_shape(j, i)) {
@@ -76,5 +74,27 @@ namespace Tsumiki_tool.Body {
                 }
             }
         }
+
+        // フィールドフォームでクリック
+        static public void Click_on_field(int x, int y) {
+            // Baseに任せる
+            mBase.Clicked();
+        }
+
+        // フィールドフォームでカーソル移動
+        static public void Move_on_field(int x, int y) {
+
+        }
+
+        // モード変更
+        static public Base Change_mode{
+            set {
+                if (mFilename != null) {
+                    mBase = value;
+                    mBase.Labeling();
+                }
+            }
+        }
+
     }
 }

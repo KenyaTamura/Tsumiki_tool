@@ -67,14 +67,14 @@ namespace Tsumiki_tool {
             }
         }
 
-        // 本体の幅（マス）
+        // フィールドの幅（マス）
         public static int Field_X {
             get {
                 return FIELD_X;
             }
         }
 
-        // 本体の高さ（マス）
+        // フィールドの高さ（マス）
         public static int Field_Y {
             get {
                 return FIELD_Y;
@@ -84,6 +84,10 @@ namespace Tsumiki_tool {
         // 編集フォームに描画、マス座標指定
         public static void Draw_edit(int x, int y, Body.Block.Color c) {
             Program.Root.Draw_edit(x, y, c);
+        }
+
+        public static void Draw_field(int x, int y, Body.Block.Color c) {
+            Program.Root.Draw_field(x, y, c);
         }
 
         // 編集フォームの幅（ピクセル）
@@ -100,19 +104,23 @@ namespace Tsumiki_tool {
             }
         }
 
-        // 本体フォームの幅（ピクセル）
-        public static int Body_Width {
+        // フィールドフォームの幅（ピクセル）
+        public static int Field_width {
             get {
-                return Program.Root.Body_width;
+                return Program.Root.Field_width;
             }
         }
 
-        // 本体フォームの高さ（ピクセル）
-        public static int Body_height {
+        // フィールドフォームの高さ（ピクセル）
+        public static int Field_height {
             get {
-                return Program.Root.Body_height;
+                return Program.Root.Field_height;
             }
         }
 
+        // モード表示ラベルの変更
+        public static void Change_label_state(string s) {
+            Program.Root.Change_label_state(s);
+        }
     }
 }

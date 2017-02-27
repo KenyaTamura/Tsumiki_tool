@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Tsumiki_tool.Body {
-    class Setting : Base{
-        public Setting() {
+    class Del : Base{
+        public Del() {
 
         }
 
@@ -19,7 +19,7 @@ namespace Tsumiki_tool.Body {
         }
 
         public void Labeling() {
-            Manager.Change_label_state("状態： 編集");
+            Manager.Change_label_state("状態： 削除");
         }
     }
 }

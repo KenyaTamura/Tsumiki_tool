@@ -46,6 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Body\Block.cs" />
+    <Compile Include="Body\Del.cs" />
+    <Compile Include="Body\Base.cs" />
+    <Compile Include="Body\Order.cs" />
     <Compile Include="Body\Root.cs" />
     <Compile Include="Body\Setting.cs" />
     <Compile Include="Component.cs" />

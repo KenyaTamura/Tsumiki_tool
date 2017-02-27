@@ -14,7 +14,7 @@ namespace Tsumiki_tool {
         private Button mButton_new;
         private Button mButton_save;
         private Button mButton_load;
-        private Button mButton_set;
+//        private Button mButton_set;
         private Button mButton_color;
         private Button mButton_edit;
         private Button mButton_del;
@@ -26,8 +26,8 @@ namespace Tsumiki_tool {
         // ピクチャー
         private PictureBox mPicture_edit;
         private Bitmap mBitmap_edit;
-        private PictureBox mPicture_body;
-        private Bitmap mBitmap_body;
+        private PictureBox mPicture_field;
+        private Bitmap mBitmap_field;
         
         // ボタンのサイズ
         private Size mB_size;
@@ -54,7 +54,7 @@ namespace Tsumiki_tool {
             NEW = 0,
             SAVE,
             LOAD,
-            SET,
+ //           SET,
             COLOR,
             EDIT,
             DEL,
@@ -64,7 +64,7 @@ namespace Tsumiki_tool {
         // ピクチャの名前の列挙型、XMLの順番に対応している
         private enum P_name {
             EDIT = 0,
-            BODY
+            FIELD
         }
         public Form1() {
             Initialize_component();
@@ -75,7 +75,7 @@ namespace Tsumiki_tool {
             this.mButton_new = new Button();
             this.mButton_save = new Button();
             this.mButton_load = new Button();
-            this.mButton_set = new Button();
+ //           this.mButton_set = new Button();
             this.mButton_color = new Button();
             this.mButton_edit = new Button();
             this.mButton_del = new Button();
@@ -84,7 +84,7 @@ namespace Tsumiki_tool {
             this.mLabel_score = new Label();
             this.mBox_file = new ComboBox();
             this.mPicture_edit = new PictureBox();
-            this.mPicture_body = new PictureBox();
+            this.mPicture_field = new PictureBox();
 
             // XMLから位置情報を受け取る
             mDoc = new Document(Manager.Path + "config.xml");
@@ -114,9 +114,11 @@ namespace Tsumiki_tool {
             Button_setting(ref this.mButton_load, B_name.LOAD);
             this.mButton_load.Click += new EventHandler(Component.B_load);
 
+            /*
             // button_set
             Button_setting(ref this.mButton_set, B_name.SET);
             this.mButton_set.Click += new EventHandler(Component.B_set);
+            */
 
             // button_color 
             Button_setting(ref this.mButton_color, B_name.COLOR);
@@ -161,9 +163,10 @@ namespace Tsumiki_tool {
             Picture_setting(ref mPicture_edit, ref mBitmap_edit, P_name.EDIT);
             mPicture_edit.MouseDown += new MouseEventHandler(Component.M_edit);
 
-            // picture_body
-            Picture_setting(ref mPicture_body, ref mBitmap_body, P_name.BODY);
-            mPicture_body.MouseDown += new MouseEventHandler(Component.M_body);
+            // picture_field
+            Picture_setting(ref mPicture_field, ref mBitmap_field, P_name.FIELD);
+            mPicture_field.MouseDown += new MouseEventHandler(Component.M_field_click);
+            mPicture_field.MouseMove += new MouseEventHandler(Component.M_field_move);
 
             // コンポーネント設置
             // ウィンドウのコンフィグ
@@ -174,7 +177,7 @@ namespace Tsumiki_tool {
             this.Controls.Add(this.mButton_new);
             this.Controls.Add(this.mButton_save);
             this.Controls.Add(this.mButton_load);
-            this.Controls.Add(this.mButton_set);
+ //           this.Controls.Add(this.mButton_set);
             this.Controls.Add(this.mButton_color);
             this.Controls.Add(this.mButton_edit);
             this.Controls.Add(this.mButton_del);
@@ -186,7 +189,7 @@ namespace Tsumiki_tool {
             this.Controls.Add(this.mBox_file);
             // ピクチャの追加
             this.Controls.Add(this.mPicture_edit);
-            this.Controls.Add(this.mPicture_body);
+            this.Controls.Add(this.mPicture_field);
 
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -234,17 +237,26 @@ namespace Tsumiki_tool {
             Graphics g = Graphics.FromImage(b);
             // 下地の色
             g.FillRectangle(Brushes.White, 0, 0, p.Width, p.Height);
+            g.Dispose();
+            // 背景
+            Draw_back(p, b, name);
+        }
+
+        // 背景の描画
+        private void Draw_back(PictureBox p, Bitmap b, P_name name) {
+            Element pic = mDoc.get_root().children[(int)Init_define.PICTURE].children[(int)name];
+            Graphics g = Graphics.FromImage(b);
             // 外枠の長方形
             Pen pen = new Pen(Color.Black, 3);
-            g.DrawRectangle(pen, 0, 0, p.Width-1, p.Height-1);
+            g.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
             // 内枠の長方形
             pen = new Pen(Color.Gray, 1);
             int row = int.Parse(pic.attribute[2].val);
             int column = int.Parse(pic.attribute[3].val);
             int w = p.Width / column;
             int h = p.Height / row;
-            for(int i = 0; i < row; ++i) {
-                for(int j = 0; j < column; ++j) {
+            for (int i = 0; i < row; ++i) {
+                for (int j = 0; j < column; ++j) {
                     g.DrawRectangle(pen, w * j, h * i, w, h);
                 }
             }
@@ -275,7 +287,7 @@ namespace Tsumiki_tool {
             return "stage" + filename.Length.ToString();
         }
 
-        // ピクチャにブロックを描画
+        // 編集フォームにブロックを描画
         // マスのXY座標、色
         public void Draw_edit(int x, int y, Body.Block.Color c) {
             Brush b;
@@ -296,22 +308,47 @@ namespace Tsumiki_tool {
                     b = Brushes.White;
                     break;
             }
+           
+            // 描画
             Graphics g = Graphics.FromImage(mBitmap_edit);
+            mPicture_edit.Image = mBitmap_edit;
             int w = mPicture_edit.Width / Manager.Block_width;
             int h = mPicture_edit.Height / Manager.Block_height;
             g.FillRectangle(b, w * x, h * y, w, h);
-            mPicture_edit.Image = mBitmap_edit;
-            // 外枠の長方形
-            Pen pen = new Pen(Color.Black, 3);
-            g.DrawRectangle(pen, 0, 0, mPicture_edit.Width - 1, mPicture_edit.Height - 1);
-            // 内枠の長方形
-            pen = new Pen(Color.Gray, 1);
-            for (int i = 0; i < Manager.Block_height; ++i) {
-                for (int j = 0; j < Manager.Block_width; ++j) {
-                    g.DrawRectangle(pen, w * j, h * i, w, h);
-                }
-            }
             g.Dispose();
+            // 背景
+            Draw_back(mPicture_edit, mBitmap_edit, P_name.EDIT);
+        }
+
+
+        // フィールドフォームにブロックを描画
+        // マスのXY座標、色
+        public void Draw_field(int x, int y, Body.Block.Color c) {
+            Brush b;
+            switch (c) {
+                case Body.Block.Color.RED:
+                    b = Brushes.Red;
+                    break;
+                case Body.Block.Color.BLUE:
+                    b = Brushes.Blue;
+                    break;
+                case Body.Block.Color.GREEN:
+                    b = Brushes.Green;
+                    break;
+                case Body.Block.Color.YELLOW:
+                    b = Brushes.Yellow;
+                    break;
+                default:
+                    b = Brushes.White;
+                    break;
+            }
+            Graphics g = Graphics.FromImage(mBitmap_field);
+            mPicture_field.Image = mBitmap_field;
+            int w = mPicture_field.Width / Manager.Field_X;
+            int h = mPicture_field.Height / Manager.Field_Y;
+            g.FillRectangle(b, w * x, h * y, w, h);            
+            g.Dispose();
+            Draw_back(mPicture_field, mBitmap_field, P_name.FIELD);
         }
 
         // 編集フォームの幅（ピクセル）
@@ -328,18 +365,23 @@ namespace Tsumiki_tool {
             }
         }
 
-        // 本体フォームの幅（ピクセル）
-        public int Body_width {
+        // フィールドフォームの幅（ピクセル）
+        public int Field_width {
             get {
-                return mPicture_body.Width;
+                return mPicture_field.Width;
             }
         }
 
-        // 本体フォームの高さ（ピクセル）
-        public int Body_height {
+        // フィールドフォームの高さ（ピクセル）
+        public int Field_height {
             get {
-                return mPicture_body.Height;
+                return mPicture_field.Height;
             }
+        }
+
+        // モード表示ラベルの変更
+        public void Change_label_state(string s) {
+            mLabel_state.Text = s;
         }
     }
 }

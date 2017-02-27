@@ -5,11 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Tsumiki_tool.Body {
-    class Setting : Base{
-        public Setting() {
-
-        }
-
+    class Order : Base{
         public void Clicked() {
 
         }
@@ -19,7 +15,7 @@ namespace Tsumiki_tool.Body {
         }
 
         public void Labeling() {
-            Manager.Change_label_state("状態： 編集");
+            Manager.Change_label_state("状態： 順序");
         }
     }
 }

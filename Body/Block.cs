@@ -82,10 +82,10 @@ namespace Tsumiki_tool.Body {
                 mColor = Color.RED;
             }
         }
-
+        
         // 範囲外ならfalse
         private bool Range_check(int x, int y) {
-            if (x < 0 || x >= Manager.Block_width && y < 0 || y >= Manager.Body_height) {
+            if (x < 0 || x >= Manager.Block_width && y < 0 || y >= Manager.Field_height) {
                 return false;
             }
             return true;
