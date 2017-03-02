@@ -21,6 +21,20 @@ namespace Tsumiki_tool.Body {
         // フィールド操作を行うクラス
         static private Base mBase = new Setting();
 
+        // 編集フォームブロックのプロパティ
+        static public ref Block Form_block {
+            get {
+                return ref mForm_block;
+            }
+        }
+
+        // フィールドに配置してあるブロック情報
+        static public ref Block[] Blocks {
+            get {
+                return ref mBlocks;
+            }
+        }
+
         // 新規作成
         static public void New_stage() {
             // 初期値を代入
@@ -64,7 +78,7 @@ namespace Tsumiki_tool.Body {
         }
 
         // 形を調べてフォームの再描画
-        static private void Redraw_edit() {
+        static public void Redraw_edit() {
             for (int i = 0; i < Manager.Block_height; ++i) {
                 for (int j = 0; j < Manager.Block_width; ++j) {
                     if (mForm_block.Get_shape(j, i)) {
@@ -98,7 +112,7 @@ namespace Tsumiki_tool.Body {
         // フィールドフォームでクリック
         static public void Click_on_field(System.Windows.Forms.MouseEventArgs e) {
             // Baseに任せる
-            mBase.Clicked();
+            mBase.Clicked(e);
         }
 
         // フィールドフォームでカーソル移動
@@ -110,7 +124,7 @@ namespace Tsumiki_tool.Body {
             int mass_x = x / (Manager.Field_width / Manager.Field_X);
             int mass_y = y / (Manager.Field_height / Manager.Field_Y);
             // Baseに任せる
-            mBase.Moved(mass_x, mass_y, mForm_block);
+            mBase.Moved(mass_x, mass_y);
         }
 
         // モード変更

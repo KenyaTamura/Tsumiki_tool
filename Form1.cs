@@ -162,11 +162,11 @@ namespace Tsumiki_tool {
             // ピクチャ
             // picture_edit
             Picture_setting(ref mPicture_edit, ref mBitmap_edit, P_name.EDIT);
-            mPicture_edit.MouseDown += new MouseEventHandler(Component.M_edit);
+            mPicture_edit.MouseUp += new MouseEventHandler(Component.M_edit);
 
             // picture_field
             Picture_setting(ref mPicture_field, ref mBitmap_field, P_name.FIELD);
-            mPicture_field.MouseDown += new MouseEventHandler(Component.M_field_click);
+            mPicture_field.MouseUp += new MouseEventHandler(Component.M_field_click);
             mPicture_field.MouseMove += new MouseEventHandler(Component.M_field_move);
             mPicture_field.MouseLeave += new EventHandler(Component.M_field_leave);
 

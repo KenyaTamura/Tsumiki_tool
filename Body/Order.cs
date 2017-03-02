@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Tsumiki_tool.Body {
     class Order : Base{
-        public void Clicked() {
+        public void Clicked(System.Windows.Forms.MouseEventArgs e) {
 
         }
 
         // 何もしない
-        public void Moved(int x, int y, Block b) {
+        public void Moved(int x, int y) {
 
         }
 

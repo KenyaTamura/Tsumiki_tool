@@ -57,7 +57,7 @@ namespace Tsumiki_tool {
         // 編集フォームのマウス操作
         static public void M_edit(object sender, MouseEventArgs e) {
             // 左クリックでブロックを付けたり消したり
-            if(e.Button == MouseButtons.Left) {
+            if (e.Button == MouseButtons.Left) {
                 // Rootに渡してそっちで処理
                 Body.Root.Click_on_edit(e.X, e.Y);
             }
@@ -65,9 +65,9 @@ namespace Tsumiki_tool {
 
         // フィールドフォームのマウス操作
         // フィールドフォームでクリック
-        static public void M_field_click(object sender, MouseEventArgs e) { 
+        static public void M_field_click(object sender, MouseEventArgs e) {
             // Rootでモードごとの処理
-            Manager.Draw_string_field(0, 0, "10");
+            Body.Root.Click_on_field(e);
         }
 
         // マウスカーソルがフィールドフォームを移動
