@@ -73,14 +73,7 @@ namespace Tsumiki_tool.Body {
                 }
             }
             // ブロック群に追加
-            if (Root.Blocks == null) {
-                Root.Blocks = new Block[1];
-            }
-            else {
-                Array.Resize<Block>(ref Root.Blocks, Root.Blocks.Length + 1);
-            }
-            Root.Blocks[Root.Blocks.Length - 1] = b;
-            // フィールド情報の更新
+            Root.Blocks.Add(b);// フィールド情報の更新
             for (int num = 0; num < Manager.Block_num; ++num) {
                 if (b.Get_shape(num)) {
                     Root.Set_field(b.Get_X(num), b.Get_Y(num), b.Get_color);

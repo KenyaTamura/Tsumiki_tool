@@ -15,7 +15,7 @@ namespace Tsumiki_tool.Body {
         // フィールド情報
         static private Block.Color[] mFields = null;    // NONE以外なら埋まっている
         static private Block.Color[] mFields_prev = null;    // 前回の描画
-        static private Block[] mBlocks = null;
+        static private List<Block> mBlocks = null;
         static private Block mForm_block = null;
 
         // フィールド操作を行うクラス
@@ -29,7 +29,7 @@ namespace Tsumiki_tool.Body {
         }
 
         // フィールドに配置してあるブロック情報
-        static public ref Block[] Blocks {
+        static public ref List<Block> Blocks {
             get {
                 return ref mBlocks;
             }
@@ -44,6 +44,7 @@ namespace Tsumiki_tool.Body {
             mXml_data = new Document();
             mFields = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
             mFields_prev = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
+            mBlocks = new List<Block>();
             mForm_block = new Block(0);
         }
 
@@ -111,6 +112,10 @@ namespace Tsumiki_tool.Body {
 
         // フィールドフォームでクリック
         static public void Click_on_field(System.Windows.Forms.MouseEventArgs e) {
+            // 初期化されていないなら終了
+            if (Root.Blocks == null) {
+                return;
+            }
             // Baseに任せる
             mBase.Clicked(e);
         }
