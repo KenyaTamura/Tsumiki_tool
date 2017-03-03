@@ -43,7 +43,6 @@ namespace Tsumiki_tool.Body {
                 if (drawn[num]) {
                     // 本当は無いから消しておく
                     Root.Set_field(b.Get_X(num), b.Get_Y(num), Block.Color.NONE);
-                    int c = Root.Form_block.Get_X(num);
                 }
             }
 
@@ -57,6 +56,7 @@ namespace Tsumiki_tool.Body {
         private void Addition() {
             // フィールド情報とブロック位置の確認
             Block b = Root.Form_block;
+            bool is_empty = true;
             for(int num = 0; num < Manager.Block_num; ++num) {
                 if (b.Get_shape(num)) {
                     int x = b.Get_X(num);
@@ -70,13 +70,22 @@ namespace Tsumiki_tool.Body {
                     if(Root.Get_field(x,y) != Block.Color.NONE) {
                         return;
                     }
+                    // 何か形がある印
+                    is_empty = false;
                 }
             }
+            // 形がないなら追加しない
+            if (is_empty) {
+                return;
+            }
             // ブロック群に追加
-            Root.Blocks.Add(b);// フィールド情報の更新
+            Root.Blocks.Add(b);
+            // フィールド情報の更新
             for (int num = 0; num < Manager.Block_num; ++num) {
                 if (b.Get_shape(num)) {
                     Root.Set_field(b.Get_X(num), b.Get_Y(num), b.Get_color);
+                    // 番号もついでに
+                    Manager.Draw_string_field(b.Get_X(num), b.Get_Y(num), Root.Blocks.Count.ToString());
                 }
             }
             // 編集フォームのリセット          

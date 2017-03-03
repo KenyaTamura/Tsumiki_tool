@@ -110,6 +110,32 @@ namespace Tsumiki_tool.Body {
             }
         }
 
+        // 番号の再描画
+        static public void Redraw_order() {
+            if (mFields == null) {
+                return;
+            }
+            // 一度上書き
+            for(int y = 0; y < Manager.Field_Y; ++y) {
+                for(int x = 0; x < Manager.Field_X; ++x) {
+                    int point = x + y * Manager.Field_X;
+                    if(mFields[point] != Block.Color.NONE) {
+                        Manager.Draw_field(x, y, mFields[point]);
+                    }
+                }
+            }
+            // 番号を描画
+            int order = 1;
+            foreach (Block b in Blocks) {
+                for (int num = 0; num < Manager.Block_num; ++num) {
+                    if (b.Get_shape(num)) {
+                        Manager.Draw_string_field(b.Get_X(num), b.Get_Y(num), order.ToString());
+                    }
+                }
+                ++order;
+            }
+        }
+
         // フィールドフォームでクリック
         static public void Click_on_field(System.Windows.Forms.MouseEventArgs e) {
             // 初期化されていないなら終了

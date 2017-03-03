@@ -65,6 +65,7 @@ namespace Tsumiki_tool.Body {
                     Root.Blocks.Remove(b);
                     // 再描画
                     Root.Redraw_field();
+                    Root.Redraw_order();
                     break;
                 }
             }                 
