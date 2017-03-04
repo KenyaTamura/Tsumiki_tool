@@ -46,6 +46,7 @@ namespace Tsumiki_tool.Body {
             mFields_prev = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
             mBlocks = new List<Block>();
             mForm_block = new Block(0);
+            Reset();
         }
 
         // 保存
@@ -182,6 +183,34 @@ namespace Tsumiki_tool.Body {
                 return Block.Color.NONE;
             }
             return mFields[x + y * Manager.Field_X];
+        }
+
+        // ブロック情報の表示
+        static public void Draw_score() {
+            // 高さを調べる
+            int num = 0;
+            foreach(Block.Color c in mFields) {
+                if(c != Block.Color.NONE) {
+                    break;
+                }
+                ++num;
+            }
+            int height = Manager.Field_Y - (num / Manager.Field_X);
+            Manager.Change_label_score("ブロック数：" + mBlocks.Count.ToString() + "  高さ：" + height.ToString());
+        }
+
+        static private void Reset() {
+            for (int y = 0; y < Manager.Field_Y; ++y) {
+                for (int x = 0; x < Manager.Field_X; ++x) {
+                    int point = x + y * Manager.Field_X;
+                    Manager.Draw_field(x, y, Block.Color.NONE);
+                }
+            }
+            for (int i = 0; i < Manager.Block_height; ++i) {
+                for (int j = 0; j < Manager.Block_width; ++j) {
+                    Manager.Draw_edit(j, i, Block.Color.NONE);
+                }
+            }
         }
 
     }

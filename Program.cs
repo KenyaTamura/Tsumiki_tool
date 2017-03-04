@@ -16,7 +16,7 @@ namespace Tsumiki_tool
         }
 
         // 動かしてるフォーム
-        public static Form1 Root {
+        static public Form1 Root {
             get {
                 return mRoot;
             }

@@ -66,6 +66,7 @@ namespace Tsumiki_tool.Body {
                     // 再描画
                     Root.Redraw_field();
                     Root.Redraw_order();
+                    Root.Draw_score();
                     break;
                 }
             }                 

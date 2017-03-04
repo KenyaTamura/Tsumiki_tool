@@ -392,6 +392,11 @@ namespace Tsumiki_tool {
             mLabel_state.Text = s;
         }
 
+        // スコア表示ラベルの変更
+        public void Change_label_score(string s) {
+            mLabel_score.Text = s;
+        }
+
         // フィールドフォームに文字描画
         public void Draw_string_field(int x, int y, string s) {
             Graphics g = Graphics.FromImage(mBitmap_field);
@@ -400,6 +405,6 @@ namespace Tsumiki_tool {
             int h = mPicture_field.Height / Manager.Field_Y;
             g.DrawString(s, new Font("",12), Brushes.Black, w * x, h * y);
             g.Dispose();
-        }
+        }        
     }
 }

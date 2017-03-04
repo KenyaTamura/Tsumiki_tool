@@ -23,7 +23,7 @@ namespace Tsumiki_tool {
         }
 
         // コンボボックスの操作
-        public static string Box_file {
+        static public string Box_file {
             // 指定中の要素
             get {
                 return Program.Root.Box_file;
@@ -35,96 +35,104 @@ namespace Tsumiki_tool {
         }
 
         // ステージ番号を返す
-        public static string New_stage() {
+        static public string New_stage() {
             return Program.Root.New_stage();
         }
 
         // パス
-        public static string Path {
+        static public string Path {
             get {
                 return PATH;
             }
         }
 
         // 1ブロック数
-        public static int Block_num {
+        static public int Block_num {
             get {
                 return BLOCK_NUM;
             }
         }
 
         // 1ブロックの高さ
-        public static int Block_height {
+        static public int Block_height {
             get {
                 return BLOCK_HEIGHT;
             }
         }
 
         // 1ブロックの幅
-        public static int Block_width {
+        static public int Block_width {
             get {
                 return BLOCK_WIDTH;
             }
         }
 
         // フィールドの幅（マス）
-        public static int Field_X {
+        static public int Field_X {
             get {
                 return FIELD_X;
             }
         }
 
         // フィールドの高さ（マス）
-        public static int Field_Y {
+        static public int Field_Y {
             get {
                 return FIELD_Y;
             }
         }
         
         // 編集フォームに描画、マス座標指定
-        public static void Draw_edit(int x, int y, Body.Block.Color c) {
+        static public void Draw_edit(int x, int y, Body.Block.Color c) {
             Program.Root.Draw_edit(x, y, c);
         }
 
-        public static void Draw_field(int x, int y, Body.Block.Color c) {
+        static public void Draw_field(int x, int y, Body.Block.Color c) {
             Program.Root.Draw_field(x, y, c);
         }
 
         // 編集フォームの幅（ピクセル）
-        public static int Edit_width {
+        static public int Edit_width {
             get {
                 return Program.Root.Edit_width;
             }
         }
 
         // 編集フォームの高さ（ピクセル）
-        public static int Edit_height {
+        static public int Edit_height {
             get {
                 return Program.Root.Edit_height;
             }
         }
 
         // フィールドフォームの幅（ピクセル）
-        public static int Field_width {
+        static public int Field_width {
             get {
                 return Program.Root.Field_width;
             }
         }
 
         // フィールドフォームの高さ（ピクセル）
-        public static int Field_height {
+        static public int Field_height {
             get {
                 return Program.Root.Field_height;
             }
         }
 
         // モード表示ラベルの変更
-        public static void Change_label_state(string s) {
+        static public void Change_label_state(string s) {
             Program.Root.Change_label_state(s);
         }
 
-        public static void Draw_string_field(int x, int y, string s) {
+        // スコア表示ラベルの変更
+        static public void Change_label_score(string s) {
+            Program.Root.Change_label_score(s);
+        }
+
+        // フィールドに文字出力
+        static public void Draw_string_field(int x, int y, string s) {
             Program.Root.Draw_string_field(x, y, s);
         }
+
+        
     }
 }

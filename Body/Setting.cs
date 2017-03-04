@@ -92,6 +92,7 @@ namespace Tsumiki_tool.Body {
             Root.Form_block = new Block(0);
             Root.Redraw_edit();
             Root.Redraw_field();
+            Root.Draw_score();
         }
     }
 }
