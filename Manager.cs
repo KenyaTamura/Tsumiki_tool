@@ -13,7 +13,7 @@ namespace Tsumiki_tool {
         static int BLOCK_HEIGHT = 2;
         static int BLOCK_WIDTH = 4;
         // フィールド情報の定数
-        static int FIELD_X = 10;
+        static int FIELD_X = 12;
         static int FIELD_Y = 20;
         // パス
         static string PATH = "Data\\";

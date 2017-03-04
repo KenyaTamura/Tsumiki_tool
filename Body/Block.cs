@@ -60,7 +60,7 @@ namespace Tsumiki_tool.Body {
         // 基準点
         public int X {
             get {
-                return mX + mX_offset;
+                return mX;
             }
             set {
                 mX = value;
@@ -69,7 +69,7 @@ namespace Tsumiki_tool.Body {
 
         public int Y {
             get {
-                return mY + mY_offset;
+                return mY;
             }
             set {
                 mY = value;
@@ -163,15 +163,23 @@ namespace Tsumiki_tool.Body {
             set {
                 switch (value) {
                     case "NORTH":
+                        mX_offset = 0;
+                        mY_offset = 0;
                         mDir = Dir.NORTH;
                         return;
                     case "EAST":
+                        mX_offset = -1;
+                        mY_offset = 0;
                         mDir = Dir.SOUTH;
                         return;
                     case "SOUTH":
+                        mX_offset = -3;
+                        mY_offset = -1;
                         mDir = Dir.SOUTH;
                         return;
                     case "WEST":
+                        mX_offset = 0;
+                        mY_offset = -3;
                         mDir = Dir.WEST;
                         return;
                 }
