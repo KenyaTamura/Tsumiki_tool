@@ -91,6 +91,9 @@ namespace Tsumiki_tool.Body {
             }
             Init(s);
             mXml_data = new Document(mFilename);
+            if(mXml_data.get_root().name == "FileNotFound") {
+                return;
+            }
             // XMLデータから情報を読み込み、値を入力
             Element stage = mXml_data.get_root().children[0];   // <Stage>
             foreach(Element data in stage.children) {

@@ -27,12 +27,16 @@ namespace Tsumiki_tool.Body {
         private bool[] mShape;
         private int mX;
         private int mY;
+        private int mX_offset;  // 回転のずれに対応するため
+        private int mY_offset;
         private Dir mDir;
         private Color mColor;
 
         public Block(int shape) {
             mX = -1;
             mY = -1;
+            mX_offset = 0;
+            mY_offset = 0;
             mDir = Dir.NORTH;
             mColor = Color.RED;
             mShape = new bool[Manager.Block_num];
@@ -56,7 +60,7 @@ namespace Tsumiki_tool.Body {
         // 基準点
         public int X {
             get {
-                return mX;
+                return mX + mX_offset;
             }
             set {
                 mX = value;
@@ -65,7 +69,7 @@ namespace Tsumiki_tool.Body {
 
         public int Y {
             get {
-                return mY;
+                return mY + mY_offset;
             }
             set {
                 mY = value;
@@ -212,28 +216,19 @@ namespace Tsumiki_tool.Body {
             // 基準点を中心に回す
             switch (mDir) {
                 case Dir.NORTH:
-                    mY += 3;
+                    mY_offset += 3;
                     break;
                 case Dir.EAST:
-                    mX -= 1;
+                    mX_offset -= 1;
                     break;
                 case Dir.SOUTH:
-                    mX -= 2;
-                    mY -= 1;
+                    mX_offset -= 2;
+                    mY_offset -= 1;
                     break;
                 case Dir.WEST:
-                    mX += 3;
-                    mY -= 2;
+                    mX_offset += 3;
+                    mY_offset -= 2;
                     break;
-            }
-            // フィールドの範囲内に押し込む
-            for (int i = 0; i < Manager.Block_num; ++i) {
-                if (mShape[i]) {
-                    if (Get_X(i) < 0) { ++mX; --i; }
-                    else if (Get_X(i) >= Manager.Field_X) { --mX; --i; }
-                    else if (Get_Y(i) < 0) { ++mY; --i; }
-                    else if (Get_Y(i) >= Manager.Field_Y) { --mY; --i; }
-                }
             }
         }
 
@@ -244,13 +239,13 @@ namespace Tsumiki_tool.Body {
             }
             switch (mDir) {
                 case Dir.NORTH:
-                    return mX + (num % Manager.Block_width);
+                    return (mX + mX_offset) + (num % Manager.Block_width);
                 case Dir.SOUTH:
-                    return mX + (((Manager.Block_num - 1) - num) % Manager.Block_width);
+                    return (mX + mX_offset) + (((Manager.Block_num - 1) - num) % Manager.Block_width);
                 case Dir.EAST:
-                    return mX + (((Manager.Block_num - 1) - num) / Manager.Block_width);
+                    return (mX + mX_offset) + (((Manager.Block_num - 1) - num) / Manager.Block_width);
                 case Dir.WEST:
-                    return mX + (num / Manager.Block_width);
+                    return (mX + mX_offset) + (num / Manager.Block_width);
             }
             return -1;
         }
@@ -262,13 +257,13 @@ namespace Tsumiki_tool.Body {
             }
             switch (mDir) {
                 case Dir.NORTH:
-                    return mY + (num / Manager.Block_width);
+                    return (mY + mY_offset) + (num / Manager.Block_width);
                 case Dir.SOUTH:
-                    return mY + (((Manager.Block_num - 1) - num) / Manager.Block_width);
+                    return (mY + mY_offset) + (((Manager.Block_num - 1) - num) / Manager.Block_width);
                 case Dir.EAST:
-                    return mY + (num % Manager.Block_width);
+                    return (mY + mY_offset) + (num % Manager.Block_width);
                 case Dir.WEST:
-                    return mY + (((Manager.Block_num - 1) - num) % Manager.Block_width);
+                    return (mY + mY_offset) + (((Manager.Block_num - 1) - num) % Manager.Block_width);
             }
             return -1;
         }
