@@ -46,12 +46,7 @@ namespace Tsumiki_tool.Body {
             else {
                 return;
             }
-            mFilename = Manager.Path + s + ".xml";
-            mFields = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
-            mFields_prev = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
-            mBlocks = new List<Block>();
-            mForm_block = new Block(0);
-            Reset();
+            Init(s);
         }
 
         // 保存
@@ -73,9 +68,9 @@ namespace Tsumiki_tool.Body {
                 ++num;
             }
             int height = Manager.Field_Y - (num / Manager.Field_X);
-            mXml_data.get_root().children[0].add_attribute(new XML_cs.Attribute("num", height.ToString()));
+            mXml_data.get_root().children[0].add_attribute(new XML_cs.Attribute("height", height.ToString()));
             // ブロックとその位置
-            num = 1;
+            num = 0;
             foreach(Block b in mBlocks) {
                 mXml_data.get_root().children[0].add_child(new Element("Data"));
                 mXml_data.get_root().children[0].children[num].add_attribute(new XML_cs.Attribute("shape", b.Get_shape().ToString()));
@@ -89,12 +84,47 @@ namespace Tsumiki_tool.Body {
         }
 
         // ロード
-        static public void Road() {
+        static public void Load() {
             string s = Manager.Box_file;
             if(s == null) {
                 return;
             }
-
+            Init(s);
+            mXml_data = new Document(mFilename);
+            // XMLデータから情報を読み込み、値を入力
+            Element stage = mXml_data.get_root().children[0];   // <Stage>
+            foreach(Element data in stage.children) {
+                foreach (XML_cs.Attribute a in data.attribute) {
+                    switch (a.name) {
+                        case "shape":
+                            mBlocks.Add(new Block(int.Parse(a.val)));
+                            break;
+                        case "color":
+                            mBlocks[mBlocks.Count - 1].Get_color_string = a.val;
+                            break;
+                        case "x":
+                            mBlocks[mBlocks.Count - 1].X = int.Parse(a.val);
+                            break;
+                        case "y":
+                            mBlocks[mBlocks.Count - 1].Y = int.Parse(a.val);
+                            break;
+                        case "dir":
+                            mBlocks[mBlocks.Count - 1].Get_dir = a.val;
+                            break;
+                    }
+                }
+            }
+            // 描画
+            foreach(Block b in mBlocks) {
+                for(int num = 0;num < Manager.Block_num; ++num) {
+                    if (b.Get_shape(num)) {
+                        mFields[b.Get_X(num) + (b.Get_Y(num) * Manager.Field_X)] = b.Get_color;
+                    }
+                }
+            }
+            Redraw_field();
+            Redraw_order();
+            Draw_score();
         }
 
         // 編集フォームでクリック
@@ -240,6 +270,7 @@ namespace Tsumiki_tool.Body {
             Manager.Change_label_score("ブロック数：" + mBlocks.Count.ToString() + "  高さ：" + height.ToString());
         }
 
+        // 白く塗る
         static private void Reset() {
             for (int y = 0; y < Manager.Field_Y; ++y) {
                 for (int x = 0; x < Manager.Field_X; ++x) {
@@ -252,6 +283,16 @@ namespace Tsumiki_tool.Body {
                     Manager.Draw_edit(j, i, Block.Color.NONE);
                 }
             }
+        }
+
+        // 初期化、ファイル名
+        static private void Init(string s) {
+            mFilename = Manager.Path + s + ".xml";
+            mFields = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
+            mFields_prev = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
+            mBlocks = new List<Block>();
+            mForm_block = new Block(0);
+            Reset();
         }
 
     }

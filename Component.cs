@@ -20,7 +20,7 @@ namespace Tsumiki_tool {
         
         // 読込み
         static public void B_load(object sender, EventArgs e) {
-
+            Body.Root.Load();
         }
 
         /*
