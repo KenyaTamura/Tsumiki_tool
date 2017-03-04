@@ -170,7 +170,7 @@ namespace Tsumiki_tool.Body {
                     case "EAST":
                         mX_offset = -1;
                         mY_offset = 0;
-                        mDir = Dir.SOUTH;
+                        mDir = Dir.EAST;
                         return;
                     case "SOUTH":
                         mX_offset = -3;
