@@ -39,9 +39,14 @@ namespace Tsumiki_tool.Body {
         static public void New_stage() {
             // 初期値を代入
             string s = Manager.New_stage();
-            Manager.Box_file = s;
+            if (Manager.Box_file != s) {
+                Manager.Box_file = s;
+            }
+            // ボックスファイルと同じ名前、新しくない
+            else {
+                return;
+            }
             mFilename = Manager.Path + s + ".xml";
-            mXml_data = new Document();
             mFields = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
             mFields_prev = Enumerable.Repeat<Block.Color>(Block.Color.NONE, Manager.Field_X * Manager.Field_Y).ToArray();
             mBlocks = new List<Block>();
@@ -51,9 +56,45 @@ namespace Tsumiki_tool.Body {
 
         // 保存
         static public void Save() {
-            if (mFilename != null) {
-                mXml_data.write(mFilename);
+            if (mFilename == null) {
+                return;
             }
+            // 数、高さ、ブロック、位置を保存
+            mXml_data = new Document();
+            mXml_data.get_root().add_child(new Element("Stage"));
+            // 数
+            mXml_data.get_root().children[0].add_attribute(new XML_cs.Attribute("num", mBlocks.Count.ToString()));
+            // 高さ
+            int num = 0;
+            foreach (Block.Color c in mFields) {
+                if (c != Block.Color.NONE) {
+                    break;
+                }
+                ++num;
+            }
+            int height = Manager.Field_Y - (num / Manager.Field_X);
+            mXml_data.get_root().children[0].add_attribute(new XML_cs.Attribute("num", height.ToString()));
+            // ブロックとその位置
+            num = 1;
+            foreach(Block b in mBlocks) {
+                mXml_data.get_root().children[0].add_child(new Element("Data"));
+                mXml_data.get_root().children[0].children[num].add_attribute(new XML_cs.Attribute("shape", b.Get_shape().ToString()));
+                mXml_data.get_root().children[0].children[num].add_attribute(new XML_cs.Attribute("color", b.Get_color_string));
+                mXml_data.get_root().children[0].children[num].add_attribute(new XML_cs.Attribute("x", b.X.ToString()));
+                mXml_data.get_root().children[0].children[num].add_attribute(new XML_cs.Attribute("y", b.Y.ToString()));
+                mXml_data.get_root().children[0].children[num].add_attribute(new XML_cs.Attribute("dir", b.Get_dir));
+                ++num;
+            }
+            mXml_data.write(mFilename);
+        }
+
+        // ロード
+        static public void Road() {
+            string s = Manager.Box_file;
+            if(s == null) {
+                return;
+            }
+
         }
 
         // 編集フォームでクリック
@@ -189,8 +230,8 @@ namespace Tsumiki_tool.Body {
         static public void Draw_score() {
             // 高さを調べる
             int num = 0;
-            foreach(Block.Color c in mFields) {
-                if(c != Block.Color.NONE) {
+            foreach (Block.Color c in mFields) {
+                if (c != Block.Color.NONE) {
                     break;
                 }
                 ++num;

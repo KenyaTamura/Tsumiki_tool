@@ -270,6 +270,9 @@ namespace Tsumiki_tool {
             // 指定中の要素
             get {
                 int index = mBox_file.SelectedIndex;
+                if(index == -1) {
+                    return null;
+                }
                 return mBox_file.Items[index].ToString();
             }
             // 末尾に追加
@@ -279,6 +282,9 @@ namespace Tsumiki_tool {
                 if (flag == -1) {
                     mBox_file.Items.Add(value);
                     mBox_file.SelectedIndex = mBox_file.Items.Count - 1;
+                }
+                else {
+                    mBox_file.SelectedIndex = flag;
                 }
             }
         }

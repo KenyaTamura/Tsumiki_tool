@@ -48,6 +48,10 @@ namespace XML_cs
             return mRoot;
         }
 
+        public ref Element get_root_ref() {
+            return ref mRoot;
+        }
+
         // 現在の状態をファイル出力
         public void write(string filename) {
             string data = "";
